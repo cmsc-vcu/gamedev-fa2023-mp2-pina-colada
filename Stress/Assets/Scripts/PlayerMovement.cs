@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -128,6 +129,10 @@ public class PlayerMovement : MonoBehaviour
         if(collision.gameObject.layer == 8)
         {
             StartCoroutine(isDead());
+        }
+        if(collision.gameObject.tag == "Win")
+        {
+            SceneManager.LoadScene("EndScene");
         }
     }
 }
