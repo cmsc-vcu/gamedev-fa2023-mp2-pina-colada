@@ -9,24 +9,30 @@ public class PlayerMovement : MonoBehaviour
     private float jumpingPower = 16f;
     private bool isFacingRight = true;
     private bool inAir = false;
+    private bool dead = false;
 
+    private Vector2 size = new Vector2(0.8f,0.2f);
 
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float gravity;
+    private Vector3 respawnPoint;
+    public Animator animator;
 
     public GameObject Target;
     // Start is called before the first frame update
     void Start()
     {
-
+        respawnPoint = new Vector3(865.94f, gravity * 4f,0f);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if(dead){
+            return;
+        }
         horizontal = Input.GetAxisRaw("Horizontal");
 
         if (Input.GetButtonDown("Jump") && (IsGrounded()||MirroredProperties.grounded||MirroredProperties.invGrounded))
@@ -59,12 +65,14 @@ public class PlayerMovement : MonoBehaviour
     
         Vector3 vec = new Vector3(Target.transform.position.x, -1f*Target.transform.position.y, Target.transform.position.z);
         Vector2 tmp = new Vector2(Target.transform.position.x, -1f*Target.transform.position.y);
-        if(transform.position != vec){
-            transform.position = Vector2.MoveTowards(transform.position, tmp, 2 * Time.deltaTime);
+        if(transform.position != vec && !IsGrounded()){
+            transform.position = Vector2.MoveTowards(transform.position, tmp, 8 * Time.deltaTime);
         }
 
-        if(!IsGrounded()&&(MirroredProperties.grounded||MirroredProperties.invGrounded))
-            transform.position = Vector2.MoveTowards(transform.position, tmp, 8 * Time.deltaTime);
+        if((vec != transform.position)){
+            transform.position = Vector2.MoveTowards(transform.position, tmp, 2 * Time.deltaTime);
+        }
+        
         if(MirroredProperties.grounded||MirroredProperties.invGrounded){
             if(inAir){
                 inAir = false;
@@ -80,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        return Physics2D.OverlapBox(groundCheck.position, size, 0f, groundLayer);
     }
 
     private void Flip()
@@ -91,6 +99,24 @@ public class PlayerMovement : MonoBehaviour
             Vector3 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
+        }
+    }
+    private IEnumerator isDead()
+    {
+        dead = true;
+        Time.timeScale = 0;
+        animator.Play("Player_Death");
+        yield return new WaitWhile(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f);
+        Time.timeScale = 1; 
+        dead = false;
+        transform.position = respawnPoint;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+
+        if(collision.gameObject.layer == 8)
+        {
+            transform.position = respawnPoint;
         }
     }
 }
