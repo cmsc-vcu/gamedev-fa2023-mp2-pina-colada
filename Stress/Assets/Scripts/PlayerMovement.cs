@@ -19,19 +19,23 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravity;
     private Vector3 respawnPoint;
     public Animator animator;
-
+    private float resP;
     public GameObject Target;
-    // Start is called before the first frame update
-    void Start()
-    {
-        respawnPoint = new Vector3(865.94f, gravity * 4f,0f);
-    }
 
     // Update is called once per frame
     void Update()
     {
+        resP = Dialogue.index;
+        respawnPoint = new Vector3(resP * 150f, gravity * 4f,0f);
         if(dead){
+            Debug.Log(animator.GetCurrentAnimatorStateInfo(0).normalizedTime<=0.9f);
             return;
+        }
+        else if(gravity == 1){
+            animator.Play("Player_Idle");
+        }
+        else{
+            animator.Play("Blayer_Idle");
         }
         horizontal = Input.GetAxisRaw("Horizontal");
 
@@ -53,11 +57,13 @@ public class PlayerMovement : MonoBehaviour
         if(!IsGrounded()&&(MirroredProperties.grounded||MirroredProperties.invGrounded) == false)
             inAir = true;
 
-        
-        if(IsGrounded()&&gravity == 1f)
+        if(IsGrounded()&&gravity == 1f){
+
             MirroredProperties.grounded = true;
-        else if(IsGrounded()&&gravity == -1f)
+        }
+        else if(IsGrounded()&&gravity == -1f){
             MirroredProperties.invGrounded = true;
+        }
         else if(gravity == 1f)
             MirroredProperties.grounded = false;
         else
@@ -105,8 +111,13 @@ public class PlayerMovement : MonoBehaviour
     {
         dead = true;
         Time.timeScale = 0;
-        animator.Play("Player_Death");
-        yield return new WaitWhile(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f);
+        if(gravity == 1){
+            animator.Play("Player_Death");
+        }
+        else{
+            animator.Play("Blayer_Death");
+        }
+        yield return new WaitWhile(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.9f);
         Time.timeScale = 1; 
         dead = false;
         transform.position = respawnPoint;
@@ -116,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
 
         if(collision.gameObject.layer == 8)
         {
-            transform.position = respawnPoint;
+            StartCoroutine(isDead());
         }
     }
 }

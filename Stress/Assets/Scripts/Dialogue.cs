@@ -12,7 +12,7 @@ public class Dialogue : MonoBehaviour
     public string[] linesB;
     public float textSpeed;
 
-    private int index;
+    public static int index;
 
 
     // Start is called before the first frame update
@@ -26,10 +26,38 @@ public class Dialogue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(dial.text == linesA[index])
-            {
-                nextLine();
-            }
+        if(transform.position.x > 150f && index == 0)
+        {
+            nextLine();
+        }
+        if(transform.position.x > 300f && index == 1)
+        {
+            nextLine();
+        }
+        if(transform.position.x > 450f && index == 2)
+        {
+            nextLine();
+        }
+        if(transform.position.x > 600f && index == 3)
+        {
+            nextLine();
+        }
+        if(transform.position.x > 750f && index == 4)
+        {
+            nextLine();
+        }
+        if(transform.position.x > 1000f && index == 5)
+        {
+            nextLine();
+        }
+        if(transform.position.x > 1150f && index == 6)
+        {
+            nextLine();
+        }
+        if(transform.position.x > 1300f && index == 7)
+        {
+            nextLine();
+        }     
     }
 
     void StartDialogue()
@@ -52,7 +80,7 @@ public class Dialogue : MonoBehaviour
             dialB.text += c;
             yield return new WaitForSeconds(textSpeed);
         }
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(4f);
         dial.text = string.Empty;
         dialB.text = string.Empty;
     }
