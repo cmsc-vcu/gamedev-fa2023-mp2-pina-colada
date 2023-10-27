@@ -1,6 +1,11 @@
-# gamedev-fa2023-mp2-template
+# STRESS BY PINA COLADA
 
-This is a template repo for Intro to Game Dev, Fall 2023, Minor Project 2.
-See:
-  <https://virginiacommonwealth.instructure.com/courses/86151/assignments/735642>
-  
+simple game with arrow key controls,
+space to jump
+
+Both sides are connected so when one side is on a platform, the other will also be considered on a platform
+Press f to pick up certain objects
+
+Art done by - Esther Yang & Matthew Xu
+
+Audio - by yojo Summer [https://www.youtube.com/watch?v=A4gRlHdYcp4&ab_channel=YojoSummer]
